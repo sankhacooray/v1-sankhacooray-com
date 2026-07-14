@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Avatar / Sticker / Status-Indicator — Service Sampler</title>
+<style>
+  :root{
+    --bg:#0e1116; --card:#171b22; --card2:#1d222b; --line:#2a313c;
+    --ink:#e6edf3; --muted:#9aa7b4; --accent:#5b8cff; --good:#3fb950; --warn:#d29922;
+    --radius:14px; --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme: light){
+    :root{ --bg:#f6f8fa; --card:#fff; --card2:#f0f3f7; --line:#e1e6ec; --ink:#1f2328; --muted:#5b6671; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+  header{padding:32px 24px 8px;max-width:1180px;margin:0 auto}
+  h1{font-size:24px;margin:0 0 6px}
+  header p{color:var(--muted);max-width:760px;margin:6px 0}
+  main{max-width:1180px;margin:0 auto;padding:16px 24px 80px}
+
+  section{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;margin:18px 0}
+  section h2{font-size:18px;margin:0 0 4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .badge{font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;border:1px solid var(--line)}
+  .b-live{color:var(--good);border-color:color-mix(in srgb,var(--good) 50%,transparent)}
+  .b-link{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 50%,transparent)}
+  .meta{color:var(--muted);font-size:13px;margin:4px 0 14px}
+  .meta a{color:var(--accent)}
+  code{font-family:var(--mono);font-size:12.5px;background:var(--card2);
+    padding:2px 6px;border-radius:6px;color:var(--ink);word-break:break-all}
+  .urlbar{display:block;margin:0 0 16px;padding:10px 12px;background:var(--card2);
+    border:1px solid var(--line);border-radius:10px;font-family:var(--mono);
+    font-size:12.5px;color:var(--muted);word-break:break-all}
+
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(96px,1fr))}
+  .tile{background:var(--card2);border:1px solid var(--line);border-radius:12px;
+    padding:12px 8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:8px}
+  .tile img,.tile .lottie,.tile lord-icon{width:64px;height:64px;display:block}
+  .tile img{border-radius:10px}
+  .tile small{color:var(--muted);font-size:11px;line-height:1.25;word-break:break-word}
+
+  .status-row{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .status-card{background:linear-gradient(180deg,var(--card2),transparent);
+    border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center}
+  .status-card .lottie{width:84px;height:84px;margin:0 auto}
+  .status-card .s-label{font-weight:600;margin-top:6px}
+  .status-card .s-state{color:var(--muted);font-size:12px;font-family:var(--mono)}
+
+  .links{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+  .lk{display:block;text-decoration:none;color:inherit;background:var(--card2);
+    border:1px solid var(--line);border-radius:12px;padding:14px}
+  .lk:hover{border-color:var(--accent)}
+  .lk b{display:block;margin-bottom:3px}
+  .lk span{color:var(--muted);font-size:13px}
+  .note{color:var(--muted);font-size:12.5px;margin-top:10px}
+  .pillrow{display:flex;gap:6px;flex-wrap:wrap;margin:2px 0 12px}
+  .pill{font-size:11px;color:var(--muted);background:var(--card2);border:1px solid var(--line);
+    padding:3px 9px;border-radius:999px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Avatar · Sticker · Status-Indicator — Service Sampler</h1>
+  <p>Live samples below load straight from each service's public CDN/API (no key, no build).
+     <span class="badge b-live">LIVE</span> = rendered here · <span class="badge b-link">BROWSE</span> = open the gallery (not hot-linkable).
+     If a tile is blank, that asset failed to load — note it, the others still tell you the style.</p>
+</header>
+
+<main>
+
+  <!-- STATUS DEMO -->
+  <section>
+    <h2>① Status-indicator demo <span class="badge b-live">LIVE · Lottie</span></h2>
+    <div class="meta">This is exactly your use case — animated Lottie mapped to a detected state.
+      Source: <b>Google Noto Animated Emoji</b> (open source, Apache-2.0). Each is a real <code>.lottie/.json</code> on a stable Google CDN.</div>
+    <div class="status-row" id="statusRow"></div>
+    <div class="note">Wire-up: <code>lottie.loadAnimation({ path: `…/${codepoint}/lottie.json` })</code> — swap the codepoint per detected status.</div>
+  </section>
+
+  <!-- DICEBEAR -->
+  <section>
+    <h2>② DiceBear <span class="badge b-live">LIVE · API</span></h2>
+    <div class="pillrow">
+      <span class="pill">Free</span><span class="pill">No key</span><span class="pill">SVG</span>
+      <span class="pill">30+ styles</span><span class="pill">Deterministic by seed</span>
+    </div>
+    <div class="meta">Easiest wire-up of all — it's just an <code>&lt;img&gt;</code>. Each style + seed is stable & cacheable.
+      Covers Open-Peeps, Avataaars, Notion-style and more. <a href="https://www.dicebear.com" target="_blank" rel="noopener">dicebear.com</a></div>
+    <span class="urlbar">https://api.dicebear.com/9.x/<b>{style}</b>/svg?seed=<b>{seed}</b></span>
+    <div class="grid" id="dicebearGrid"></div>
+    <div class="note">Same seed = same face forever (great for "this person"). Add <code>&amp;backgroundColor=b6e3f4</code>, <code>&amp;radius=50</code> etc. to brand them.</div>
+  </section>
+
+  <!-- AVATAAARS.IO -->
+  <section>
+    <h2>③ Avataaars.io <span class="badge b-live">LIVE · API</span></h2>
+    <div class="pillrow"><span class="pill">Free</span><span class="pill">PNG/SVG via URL</span><span class="pill">Pablo Stanley style</span></div>
+    <div class="meta">The classic friendly cartoon people, fully parameterized in the URL.
+      <a href="https://avataaars.io" target="_blank" rel="noopener">avataaars.io</a></div>
+    <div class="grid" id="avataaarsGrid"></div>
+  </section>
+
+  <!-- MULTIAVATAR -->
+  <section>
+    <h2>④ Multiavatar <span class="badge b-live">LIVE · API</span></h2>
+    <div class="pillrow"><span class="pill">Free</span><span class="pill">No key</span><span class="pill">SVG</span><span class="pill">12B combos</span></div>
+    <div class="meta">Quirky multicultural cartoon avatars. <a href="https://multiavatar.com" target="_blank" rel="noopener">multiavatar.com</a></div>
+    <span class="urlbar">https://api.multiavatar.com/<b>{seed}</b>.svg</span>
+    <div class="grid" id="multiavatarGrid"></div>
+  </section>
+
+  <!-- NOTO ANIMATED EMOJI (more) -->
+  <section>
+    <h2>⑤ Google Noto Animated Emoji <span class="badge b-live">LIVE · Lottie</span></h2>
+    <div class="pillrow"><span class="pill">Open source</span><span class="pill">Apache-2.0</span><span class="pill">Animated</span><span class="pill">Stable CDN</span></div>
+    <div class="meta">Big animated-emoji set — clean "professional sticker" feel, perfect for status/reactions.
+      <a href="https://googlefonts.github.io/noto-emoji-animation/" target="_blank" rel="noopener">browse all</a></div>
+    <div class="grid" id="notoGrid"></div>
+  </section>
+
+  <!-- FLUENT EMOJI -->
+  <section>
+    <h2>⑥ Microsoft Fluent Emoji (3D) <span class="badge b-live">LIVE · CDN</span></h2>
+    <div class="pillrow"><span class="pill">MIT</span><span class="pill">Static 3D/Flat/Color</span><span class="pill">jsDelivr</span></div>
+    <div class="meta">Premium-looking 3D stickers. Static (not animated) but very polished.
+      <a href="https://github.com/microsoft/fluentui-emoji" target="_blank" rel="noopener">repo</a></div>
+    <div class="grid" id="fluentGrid"></div>
+  </section>
+
+  <!-- OPENMOJI -->
+  <section>
+    <h2>⑦ OpenMoji <span class="badge b-live">LIVE · CDN</span></h2>
+    <div class="pillrow"><span class="pill">CC BY-SA 4.0</span><span class="pill">SVG</span><span class="pill">Flat line style</span></div>
+    <div class="meta">Open-source emoji with a distinctive flat outline look. <a href="https://openmoji.org" target="_blank" rel="noopener">openmoji.org</a></div>
+    <div class="grid" id="openmojiGrid"></div>
+  </section>
+
+  <!-- BROWSE-ONLY -->
+  <section>
+    <h2>⑧ Illustration & animated-icon libraries <span class="badge b-link">BROWSE</span></h2>
+    <div class="meta">These need a quick download / customize step (no clean hot-link API), but they're the highest-quality "professional cartoon" sources. Open, pick, self-host on your CDN.</div>
+    <div class="links">
+      <a class="lk" href="https://lottiefiles.com/free-animations" target="_blank" rel="noopener"><b>LottieFiles</b><span>Huge free Lottie library — coding, coffee, typing, loaders. Per-asset Free/Pro license.</span></a>
+      <a class="lk" href="https://lordicon.com/icons" target="_blank" rel="noopener"><b>Lordicon</b><span>Animated icons w/ hover/loop states — built for UI status. ~500 free w/ attribution.</span></a>
+      <a class="lk" href="https://useanimations.com" target="_blank" rel="noopener"><b>UseAnimations</b><span>~100 free animated icons (Lottie/JSON). Loading, activity, toggles.</span></a>
+      <a class="lk" href="https://undraw.co/illustrations" target="_blank" rel="noopener"><b>unDraw</b><span>Open SVG illustrations, recolor to brand, NO attribution. The safe default.</span></a>
+      <a class="lk" href="https://storyset.com" target="_blank" rel="noopener"><b>Storyset (Freepik)</b><span>Customizable scenes, many exportable as animated Lottie/GIF. "Person coding" scenes.</span></a>
+      <a class="lk" href="https://www.humaaans.com" target="_blank" rel="noopener"><b>Humaaans</b><span>Mix-&-match people illustrations by Pablo Stanley. Free.</span></a>
+      <a class="lk" href="https://www.openpeeps.com" target="_blank" rel="noopener"><b>Open Peeps</b><span>Hand-drawn avatar builder, CC0. (Also available as a DiceBear style above.)</span></a>
+      <a class="lk" href="https://www.opendoodles.com" target="_blank" rel="noopener"><b>Open Doodles</b><span>Free hand-drawn poses, some animated. MIT-ish.</span></a>
+      <a class="lk" href="https://blush.design" target="_blank" rel="noopener"><b>Blush</b><span>Customizable illustrations, some animated. Free + paid mix.</span></a>
+    </div>
+    <div class="note">Licensing watch-outs: LottieFiles/IconScout are per-asset (Free vs Pro) · Lordicon free needs a visible attribution link · unDraw / Humaaans / Open Peeps / Fluent / OpenMoji are the safest (open / CC0 / MIT / CC).</div>
+  </section>
+
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+<script>
+  const $ = (id)=>document.getElementById(id);
+  const el = (tag,cls)=>{const e=document.createElement(tag); if(cls)e.className=cls; return e;};
+
+  // ---- helper to build an image tile ----
+  function imgTile(parent, src, label){
+    const t = el('div','tile');
+    const img = el('img'); img.loading='lazy'; img.src=src; img.alt=label;
+    const s = el('small'); s.textContent=label;
+    t.append(img,s); parent.appendChild(t);
+  }
+  // ---- helper to build a lottie tile ----
+  function lottieTile(parent, codepoint, label, cardCls, stateText){
+    const t = el('div', cardCls||'tile');
+    const box = el('div','lottie');
+    t.appendChild(box);
+    const s = el(cardCls?'div':'small', cardCls?'s-label':null); s.textContent=label; t.appendChild(s);
+    if(stateText){ const st=el('div','s-state'); st.textContent=stateText; t.appendChild(st); }
+    parent.appendChild(t);
+    lottie.loadAnimation({
+      container: box, renderer:'svg', loop:true, autoplay:true,
+      path:`https://fonts.gstatic.com/s/e/notoemoji/latest/${codepoint}/lottie.json`
+    });
+  }
+
+  // ① STATUS DEMO (Noto lottie)
+  [
+    {cp:'1f913', label:'Coding',  state:"status='coding'"},
+    {cp:'2615',  label:'Idle',    state:"status='idle'"},
+    {cp:'1f634', label:'Away',    state:"status='away'"},
+    {cp:'1f44b', label:'Online',  state:"status='online'"},
+    {cp:'1f680', label:'Shipping',state:"status='deploy'"},
+  ].forEach(s=>lottieTile($('statusRow'), s.cp, s.label, 'status-card', s.state));
+
+  // ② DICEBEAR
+  const dbStyles = ['notionists','micah','lorelei','adventurer','big-smile','open-peeps',
+    'personas','fun-emoji','avataaars','miniavs','croodles','bottts','thumbs','pixel-art','dylan'];
+  const dbSeeds = ['Sankha','Ada','Lin'];
+  dbStyles.forEach(style=>{
+    dbSeeds.forEach((seed,i)=>{
+      imgTile($('dicebearGrid'),
+        `https://api.dicebear.com/9.x/${style}/svg?seed=${encodeURIComponent(seed)}`,
+        i===0?style:'');
+    });
+  });
+
+  // ③ AVATAAARS.IO
+  const avPresets = [
+    'avatarStyle=Circle&topType=ShortHairShortFlat&accessoriesType=Prescription02&hairColor=Black&facialHairType=Blank&clotheType=Hoodie&clotheColor=Blue03&eyeType=Happy&eyebrowType=Default&mouthType=Smile&skinColor=Light',
+    'avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=Brown&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Brown',
+    'avatarStyle=Circle&topType=ShortHairDreads01&accessoriesType=Round&hairColor=Black&clotheType=GraphicShirt&clotheColor=Heather&eyeType=Wink&mouthType=Twinkle&skinColor=DarkBrown',
+    'avatarStyle=Circle&topType=Hat&clotheType=ShirtCrewNeck&clotheColor=PastelGreen&eyeType=Surprised&mouthType=Disbelief&skinColor=Pale',
+    'avatarStyle=Circle&topType=Turban&accessoriesType=Sunglasses&clotheType=CollarSweater&clotheColor=Blue02&eyeType=Cry&mouthType=Sad&skinColor=Tanned',
+    'avatarStyle=Circle&topType=LongHairCurly&clotheType=Overall&clotheColor=Pink&eyeType=Hearts&mouthType=Smile&skinColor=Yellow'
+  ];
+  avPresets.forEach((p,i)=>imgTile($('avataaarsGrid'), `https://avataaars.io/?${p}`, 'preset '+(i+1)));
+
+  // ④ MULTIAVATAR
+  ['Sankha','Ada','Lin','Kai','Mira','Tao','Zoe','Omar'].forEach(seed=>
+    imgTile($('multiavatarGrid'), `https://api.multiavatar.com/${encodeURIComponent(seed)}.svg`, seed));
+
+  // ⑤ NOTO (more, browse-y set)
+  [
+    {cp:'1f600',label:'grin'},{cp:'1f389',label:'party'},{cp:'1f525',label:'fire'},
+    {cp:'1f4a1',label:'idea'},{cp:'1f44d',label:'thumbs up'},{cp:'2705',label:'check'},
+    {cp:'1f4bb',label:'laptop'},{cp:'1f9e0',label:'brain'},{cp:'1f3af',label:'target'},
+    {cp:'1f4a4',label:'sleep'},{cp:'1f680',label:'rocket'},{cp:'1f44f',label:'clap'}
+  ].forEach(e=>lottieTile($('notoGrid'), e.cp, e.label));
+
+  // ⑥ FLUENT EMOJI (jsDelivr, static 3D)
+  const fluentBase='https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@main/assets/';
+  [
+    ['Grinning face','grinning_face'],['Nerd face','nerd_face'],['Rocket','rocket'],
+    ['Hot beverage','hot_beverage'],['Sleeping face','sleeping_face'],['Party popper','party_popper'],
+    ['Fire','fire'],['Light bulb','light_bulb'],['Laptop','laptop'],['Check mark button','check_mark_button']
+  ].forEach(([folder,file])=>
+    imgTile($('fluentGrid'), `${fluentBase}${encodeURIComponent(folder)}/3D/${file}_3d.png`, file.replace(/_/g,' ')));
+
+  // ⑦ OPENMOJI (jsDelivr, SVG)
+  const omBase='https://cdn.jsdelivr.net/npm/openmoji@15.0.0/color/svg/';
+  ['1F913','1F600','1F680','2615','1F634','1F389','1F525','1F4A1','1F44B','1F44D']
+    .forEach(cp=>imgTile($('openmojiGrid'), `${omBase}${cp}.svg`, cp));
+</script>
+</body>
+</html>
