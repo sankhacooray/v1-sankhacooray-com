@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0e1014;
+    color: #eceef2;
+    background-image:
+      radial-gradient(900px 460px at 16% -8%, rgba(201,168,106,0.14), transparent 60%),
+      radial-gradient(820px 560px at 104% 18%, rgba(141,180,255,0.10), transparent 60%);
+    padding: 72px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 500;
+    color: #c9a86a; text-transform: uppercase; letter-spacing: 4px;
+  }
+  h1 {
+    font-family: 'Instrument Serif', serif; font-weight: 400;
+    font-size: 96px; line-height: 1.02; letter-spacing: -2px; margin-top: 28px;
+  }
+  h1 em { color: #c9a86a; font-style: italic; }
+  .lede {
+    font-size: 25px; color: #9aa3b2; max-width: 720px; margin-top: 30px; line-height: 1.45;
+  }
+  .foot { display: flex; align-items: baseline; gap: 18px; }
+  .mark { font-family: 'Instrument Serif', serif; font-size: 40px; color: #c9a86a; letter-spacing: -0.5px; }
+  .by { font-family: 'JetBrains Mono', monospace; font-size: 17px; color: #9aa3b2; letter-spacing: 1px; }
+  .url { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 17px; color: #9aa3b2; letter-spacing: 1px; }
+  .spark { position: absolute; right: 76px; top: 84px; opacity: 0.9; }
+</style>
+</head>
+<body>
+  <svg class="spark" width="150" height="150" viewBox="0 0 150 150">
+    <path d="M75 18 L88 62 L132 75 L88 88 L75 132 L62 88 L18 75 L62 62 Z"
+      fill="none" stroke="#c9a86a" stroke-width="4"
+      stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+  </svg>
+
+  <div>
+    <div class="eyebrow">v1 · the classic</div>
+    <h1>Software engineer &amp;<br><em>innovator</em>.</h1>
+    <div class="lede">The original portfolio — games, mixed reality, and research &amp; development.</div>
+  </div>
+
+  <div class="foot">
+    <span class="mark">v1</span>
+    <span class="by">Sankha Cooray</span>
+    <span class="url">v1.sankhacooray.com</span>
+  </div>
+</body>
+</html>
